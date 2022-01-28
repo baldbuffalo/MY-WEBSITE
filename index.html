@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+<form id="search-projects-form" class="central" method="get" action="https://launchpad.net/projects">
+        <input type="text" name="text" size="50">
+        <input type="submit" name="search" value="Find a Project">
+      </form>
+
+
+<script type="text/javascript">
+          LPJS.use('lp', function (Y) {
+              setFocusByName('text');
+          });
+      </script>
+
 <input aria-invalid="false" autocomplete="off" id="searchbar-input-autocomplete" placeholder="Search for songs, artists, lyrics...." type="text" class="MuiInputBase-input MuiInput-input MuiAutocomplete-input MuiAutocomplete-inputFocused MuiInputBase-inputAdornedStart" aria-autocomplete="list" autocapitalize="none" spellcheck="false" value="">
 
 
