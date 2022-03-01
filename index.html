@@ -1,6 +1,83 @@
 <!DOCTYPE html>
 
 
+
+
+<script language="javascript">
+//when creating an event handler you don't need to worry about the type of parameters. You only need to //have the correct number of parameters.
+function onAfterAddEntity(entity) {
+document.getElementById("log").value += "An entity was added with handle: " + entity.handle + "\n";
+document.getElementById("log").scrollTop = document.getElementById("log").scrollHeight; }
+function onAfterOpenDocument() {
+document.getElementById("log").value += "Opened " + myControl.activedocument.filename + "\n"; document.getElementById("log").scrollTop = document.getElementById("log").scrollHeight;
+}
+function onMouseMove(x, y) {
+document.getElementById("XY").innerHTML = "X:" + x + " Y:" + y; }
+function onMouseDown(button, shift, x, y) {
+if (button != 1) return;
+var log = document.getElementById("log");
+log.value += "Clicked at: " + x + y + "\n";
+log.scrollTop = log.scrollHeight;
+//createinstance method is a way to overcome the limitations of javascript to recognize specific types. //Using createinstance you can get a number of different class objects, in this case we get a gPoint object. var pt = myControl.createinstance(23);
+//Now that we know our object is a gPoint, we can use all its methods and properties.
+pt.setvalueex(x, y, 0);
+//In order to get the real gPoint content of the variable and not the javascript object, we need to use the //value property of our object.
+var figure = myControl.activedocument.GetEntityFromPOINT(pt.value);
+if (figure == undefined) return;
+//Using the GetEntityFromPOINT method we managed to get the object located at where the user clicked. Now that //we have the figure, we can do whatever we want. Edit it, read properties, show the grips and generally, whatever //we could do if we were using vdraw locally.
+figure.showgrips = true;
+figure.invalidate();
+log.value += figure.handle + " " + figure.type + " object selected\n"; log.scrollTop = log.scrollHeight;
+}
+//initvd is called to assign the vdraw activeX to the myControl variable.
+var myControl; function initvd() {
+myControl = document.getElementById("DVdraw1");
+//After calling the getElementById method of document, we check if myControl is undefined, //just in case something went wrong.
+if (myControl == undefined) {
+return; }
+//By default freezeevents and freezeentityevents are true, so no events will fire if not set //to false.
+myControl.freezeevents(false);
+myControl.freezeentityevents(false);
+//Using javascript, you can assign an eventhandler to an event by using attachEvent. The first //string is the event of our activeX control and the second the name of the javascript eventhandler. myControl.attachEvent('afteraddentity', onAfterAddEntity); myControl.attachEvent('afteropendocument', onAfterOpenDocument); myControl.attachEvent('CoordMouseMove', onMouseMove); myControl.attachEvent('MouseDown', onMouseDown);
+}
+function openFile() {
+myControl.activedocument.open(""); }
+function makeLine() {
+   
+myControl.CommandAction.cmdline("user"); }
+function ClearSelection() {
+var entities = myControl.activedocument.model.entities; for (var i = 0; i < entities.count; i++) {
+var figure = entities(i);
+figure.showgrips = false; }
+myControl.redraw(); }
+</script>
+<html> <head>
+<style type="text/css"> #log
+{
+width: 447px;
+} .style1 {
+width: 439px; }
+</style> </head>
+<!-- initvd is called when the onload event of body is fired. When this event is fired, it means that all components have finished loading. -->
+<body onload="javascript:initvd();">
+<form id="form1"> <table>
+<tr> <td>
+<object id="DVdraw1" style="width: 950px; height: 600px" codebase="http://www.vdraw.com/tnet/1/vdf.cab#version=-1,-1,-1,-1" classid="clsid:50585480-E1F3-432A-A9D6-C694EDC9A12D" viewastext>
+<param name="LicVAL" value="PUT THE SERVER'S LICVAL LICENSE HERE" />
+<param name="PickSize" value="10" />
+</object> </td>
+<td class="style1">
+<textarea id="log" rows="20" wrap="off"></textarea> <label id="XY">
+X:0 Y:0</label> </td>
+</tr> </table>
+<!-- adding event handlers to html components is real easy, as shown below.-->
+<button onclick="javascript:openFile();"> Open File</button>
+<button onclick="javascript:javascript:makeLine();"> Draw Line</button>
+<button onclick="javascript:ClearSelection();"> Clear Selection</button>
+</form> </body>
+</html>
+
+
 <script src="https://happygamer1450.github.io/Ruffle-Embedded/ruffle/ruffle.js"></script>
 <div class="swf"dir="ltr" style="text-align: left;" trbidi="on">
         <embed height="480" pluginspage=" http://www.macromedia.com/go/getflashplayer" src="CubeField.swf" type="application/x-shockwave-flash" width="620"></embed>
